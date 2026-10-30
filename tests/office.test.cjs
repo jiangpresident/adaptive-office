@@ -127,7 +127,7 @@ test('v1 import preserves IDs, users, programs and quantities while adding zero 
 });
 test('legacy compatibility files retain their recorded checksums', () => {
   const hashes=require('./legacy-hashes.json'),crypto=require('node:crypto');
-  for(const [name,expected] of Object.entries(hashes)) assert.equal(crypto.createHash('sha256').update(fs.readFileSync(path.join(__dirname,'..',name))).digest('hex'),expected,name);
+  for(const [name,expected] of Object.entries(hashes)) assert.equal(crypto.createHash('sha256').update(fs.readFileSync(path.join(__dirname,'..',name),'utf8').replace(/\r\n/g,'\n')).digest('hex'),expected,name);
 });
 
 test('building-wide side counts apply atomically to every floor',()=>{

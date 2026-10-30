@@ -3,7 +3,7 @@
   "dist/conversation.js": "4edd47c072cc6eafef82ae4cc419f401a83e57c85c9ab48e9061d11c56767034",
   "local-model.cjs": "44a17fab04000fb0e31f6056dc8cef2892e86d4d8b66f20c7834355a1e474086",
   "openai-model.cjs": "3bee86ddb3387fd3e0f54ae4770d6c8d6b31e69b847611af53e317957e8aa7d5",
-  "server.cjs": "0aa51bf072bff7bad393654a5a016b363963861830806e2da354732a5a11b7fa",
-  "skills/wishouse-design/SKILL.md": "a10fe923aba73590748083dd8a1e20672d3a5550bcc6a61b6579c85270dfc816",
+  "server.cjs": "877592f18e6e1dab6029e71a57b3f154efe084a52d1a59dfa5cf37868dc47a5e",
+  "skills/wishouse-design/SKILL.md": "4eb57671838124f120ec1685011416cf7ff1b837efad8203053b80695fe77c71",
   "skills/wishouse-design/references/design-rules.md": "93afd903075773bde69a1b0243362c9ca060e6a97f7aece1a4d2aa3e7b4b8e13"
 }
