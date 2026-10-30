@@ -1,0 +1,21 @@
+Fusion Pixel 12px Proportional, Simplified Chinese edition
+Version: 2026.09.01
+Author: TakWolf
+Project: https://github.com/TakWolf/fusion-pixel-font
+Official release: https://github.com/TakWolf/fusion-pixel-font/releases/tag/2026.09.01
+Downloaded archive: fusion-pixel-font-12px-proportional-otf.woff2-v2026.09.01.zip
+Download URL: https://github.com/TakWolf/fusion-pixel-font/releases/download/2026.09.01/fusion-pixel-font-12px-proportional-otf.woff2-v2026.09.01.zip
+
+File: fusion-pixel-12px-proportional-zh_hans.otf.woff2
+Size: 661212 bytes
+SHA256: de421b3da7b20e045f0712ee838f30c225f4610b348efb37e2b31baa98860cbf
+
+This font file is an unmodified official release asset.
+Its SIL Open Font License 1.1 is included as OFL.txt.
+The official archive's upstream font licenses are included in LICENSES/.
+The CSS alias 'Wish Pixel' only names the web font for application styling;
+it does not modify the font's internal name or imply original authorship.
+
+Use the pixel font for terminal identifiers, headings, and short controls.
+Keep long chat messages in a readable system sans-serif font.
+Prefer 12px, 24px, or 36px sizes for a crisp pixel grid.

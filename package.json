@@ -1,0 +1,15 @@
+{
+  "name": "adaptive-office-tower",
+  "version": "1.0.0",
+  "private": true,
+  "description": "整栋自适应办公楼 / GPT 需求提案、3D 预览与确认应用",
+  "scripts": {
+    "start": "node launch.cjs",
+    "test": "node --test tests/office.test.cjs tests/office-ai.test.cjs tests/archives.test.cjs tests/roof-gardens.test.cjs tests/dispatch.test.cjs tests/selected-dispatch.test.cjs tests/warehouse32.test.cjs",
+    "check": "node --check dist/office-model.js && node --check dist/office-view.js && node --check dist/office-chat.js && node --check launch.cjs && node --check office-ai.cjs && node --check office-server.cjs && node --check dist/office-ai-chat.js && node --check dist/office-archives.js && node --check dist/office-archives-ui.js && node --check dist/office-logistics.js"
+  },
+  "license": "MIT",
+  "engines": {
+    "node": ">=22"
+  }
+}

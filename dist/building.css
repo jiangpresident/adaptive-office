@@ -1,0 +1,14 @@
+.building-context{border-bottom:1px solid #485037;background:#101210;padding:16px 20px}
+.building-heading{display:flex;align-items:center;justify-content:space-between;gap:12px;margin-bottom:8px;color:#c6ff00;font-size:12px}
+.building-heading button,.building-choices button,.orientation-prompt button{background:transparent;color:#d9e2bd;border:1px solid #59613e;padding:7px 10px;font:inherit;font-size:11px;cursor:pointer}
+.building-choices button[aria-pressed=true],.orientation-prompt button[aria-pressed=true]{background:#fff;color:#080a08;border-color:#fff}
+.building-context svg{display:block;width:100%;max-height:320px}
+.building-choices{display:flex;gap:6px;flex-wrap:wrap;margin:8px 0}
+.building-note,.draft-status{font-size:11px;line-height:1.7;color:#b8bea8;margin:8px 0 0}
+.draft-status[data-status=collision]{color:#ff639d;border-left:2px solid #ff3291;padding-left:9px}
+.draft-caption{padding:10px 20px;border-bottom:1px solid #485037;color:#c6ff00;font-size:11px;background:#181e11}
+.orientation-prompt{margin:12px 0;padding:12px;border:1px solid #65723e;background:#171e10;font-size:12px;line-height:1.6}
+.orientation-prompt p{margin:0 0 8px}.orientation-prompt .building-choices{margin-bottom:0}
+.living-options{grid-template-columns:repeat(3,minmax(0,1fr))}
+@media(max-width:650px){.living-options{grid-template-columns:1fr}}
+@media(max-width:600px){.building-context{padding:12px}.building-context svg{max-height:230px}.building-heading{align-items:flex-start}.building-choices button{padding:8px}}

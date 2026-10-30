@@ -1,0 +1,131 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#080a08">
+  <title>OFFICE / 整栋自适应办公楼</title>
+  <meta name="description" content="先说出想住的生活，再和建筑一起决定空间。">
+  <link rel="stylesheet" href="styles.css">
+  <link rel="stylesheet" href="chat.css">
+  <link rel="stylesheet" href="plan-details.css">
+  <link rel="stylesheet" href="fonts/fonts.css">
+  <link rel="stylesheet" href="dialogue.css">
+  <link rel="stylesheet" href="function-library.css">
+  <link rel="stylesheet" href="signal-bars.css">
+  <link rel="stylesheet" href="furniture-guide.css">
+  <link rel="stylesheet" href="attention.css">
+  <link rel="stylesheet" href="building.css">
+  <script defer src="furniture-rules.js"></script>
+  <script defer src="engine.js"></script>
+  <script defer src="accessibility.js"></script>
+  <script defer src="interior.js"></script>
+  <script defer src="plan-drawing.js"></script>
+  <script defer src="conversation.js"></script>
+  <script defer src="office-chat.js"></script>
+  <script defer src="function-plans.js"></script>
+  <script defer src="design-data.js"></script>
+  <script defer src="workspace-shell.js"></script>
+  <script defer src="building.js"></script>
+  <script defer src="circulation.js"></script><script defer src="module-edits.js"></script>
+  <script defer src="plan-sync.js"></script>
+  <script defer src="app.js"></script>
+  <link rel="stylesheet" href="office.css">
+  <script defer src="office-model.js"></script>
+  <script defer src="office-logistics.js"></script>
+  <script defer src="office-view.js"></script>
+  <script defer src="office-archives.js"></script>
+  <script defer src="office-archives-ui.js"></script>
+  <script defer src="office-ai-chat.js"></script>
+  <script defer src="office-i18n.js"></script>
+  <script defer src="office-classroom.js"></script>
+</head>
+<body class="chat-focus office-mode">
+  <header class="site-header">
+    <a class="brand" href="./index.html" aria-label="办公楼首页"><span class="brand-en">整栋自适应办公楼</span></a>
+    <nav class="workspace-navigation" aria-label="工作区"><button id="workspaceChatButton" class="active" aria-pressed="true"><span>01</span> 对话</button><button id="workspacePlanButton" aria-pressed="false"><span>02</span> 空间</button></nav>
+    <div class="header-end"><span class="local-badge"><i></i>LOCAL SESSION</span><button id="saveButton" class="outline-button"><span data-icon="download"></span>保存</button><div class="more-wrap"><button id="moreButton" class="icon-button inline-action" aria-label="更多操作" aria-expanded="false" aria-controls="moreMenu">•••</button><div id="moreMenu" class="more-menu" hidden><button class="inline-action" id="importButton">载入方案 <span>↗</span></button><button class="inline-action" id="exportButton">导出平面 SVG <span>↗</span></button><button class="inline-action" id="helpButton">使用说明 <span>?</span></button><button class="inline-action" id="resetButton">重新开始 <span>↺</span></button></div></div></div>
+  </header>
+  <main class="dialogue-main">
+    <section class="intro">
+      <div class="intro-copy"><div class="eyebrow"><span class="signal-square"></span> ARCHITECTURE, IN CONVERSATION.</div><h1>让整栋楼<span>回应使用。</span></h1><p>12 × 24 m 核心筒 / 模块化办公 / 从用户到楼栋的空间反馈</p></div>
+      <div class="intro-specimen" aria-hidden="true"><div class="specimen-grid"><svg viewBox="0 0 184 112"><path d="M28 10h76v30h44v54H72V64H28Z"/><path d="M28 40h76M72 40v54M104 10v30M72 64h76"/><path class="specimen-lime" d="M104 40h44v54H104Z"/><path d="M16 10H8v84h8M28 104v5h120v-5"/><path class="specimen-cross" d="M166 13v14m-7-7h14"/></svg></div><span>HUMAN INTENT → ADAPTIVE OFFICE</span><div class="specimen-code">UNIT—001 <b>▰ ▰ ▰ ▱ ▱</b></div></div>
+    </section>
+    <section class="workspace" aria-label="对话式建筑工作台">
+      <aside class="wish-panel" id="wishPanel">
+        <div class="panel-heading"><span><i class="signal-square"></i> 对话频道</span><span class="channel-id">CH—01 / OPEN</span></div>
+        <div class="input-mode-tabs" role="tablist" aria-label="表达愿望的方式"><button id="chatModeButton" role="tab" aria-selected="true" aria-controls="chatPanel" class="active">自由对话</button><button id="guideModeButton" role="tab" aria-selected="false" aria-controls="guidePanel">需要一点引导？ ↗</button></div>
+        <section id="guidePanel" role="tabpanel" aria-labelledby="guideModeButton" hidden>
+        <div class="step-nav" id="stepNav" aria-label="设计步骤"></div>
+        <div class="wizard-content" id="wizardContent"></div>
+        <div class="wizard-actions" id="wizardActions"></div>
+        <button id="backToChatButton" class="back-to-chat inline-action">还有别的想法？继续聊聊 <span>↗</span></button>
+        </section>
+
+        <section id="chatPanel" role="tabpanel" aria-labelledby="chatModeButton">
+          <div class="chat-intro"><span class="chat-avatar" aria-hidden="true">O_</span><div><strong>办公楼助手</strong><span>从你的日常开始，不必先有答案。</span></div></div>
+          <div class="chat-status-row"><div class="model-status" id="modelStatus" data-state="checking"><span class="model-status-dot" aria-hidden="true"></span><span id="modelStatusText" role="status">正在连接…</span><button class="inline-action" id="checkModelButton" type="button" title="重新检查连接" aria-label="重新检查GPT API连接">↻</button><select id="modelChoice" aria-label="对话模型" title="使用服务器配置的 GPT 模型"><option value="openai">GPT · OpenAI API</option></select></div><button id="clearChatButton" class="restart-chat" type="button" title="清空对话与已记录需求，保留当前平面，可撤销">↺ 重新对话</button></div><div id="conversationResetNotice" class="conversation-reset-notice" role="status" hidden><span>已从头开始对话，当前平面与功能草图库保留。</span><button class="inline-action" id="undoClearChatButton" type="button">撤销</button></div>
+          <div id="chatMessages" class="chat-messages" role="log" aria-label="办公楼对话" aria-live="polite" aria-relevant="additions text"></div>
+          <div id="chatNotice" class="chat-notice" role="status" aria-live="polite" hidden><span id="thinkingSignal" class="thinking-signal" aria-hidden="true" hidden><i></i><i></i><i></i><b>思考中</b><small id="thinkingElapsed">0s</small></span><span id="chatNoticeText"></span><p id="chatStreamPreview" hidden style="white-space:pre-wrap"></p><button class="inline-action" id="cancelChatButton" type="button" hidden>停止</button><button class="inline-action" id="retryChatButton" type="button" hidden>重新回答 ↗</button></div>
+          <div class="chat-topics" aria-label="从一个想法开始"><span>试着聊聊</span><button data-chat-prompt="我想让家里有一处安静、能晒太阳的角落">一处安静的角落 <span>↗</span></button><button data-chat-prompt="我想讲究一点风水">我的风水讲究 <span>↗</span></button><button data-chat-prompt="我经常在家办公，希望工作和生活能分开一些">在家工作的日常 <span>↗</span></button></div>
+          <div id="chatIsolationNotice" class="conversation-reset-notice" hidden><span>这次对话从零开始，不读取旧平面、偏好和草图库。</span><button id="sharePlanWithChat" class="inline-action" type="button">带入当前平面</button></div>
+          <div id="orientationPrompt" class="orientation-prompt" hidden></div>
+          <form id="wishForm" class="wish-form">
+            <div class="composer-prefix" aria-hidden="true">↳</div><label class="sr-only" for="wishInput">描述你的居住愿望</label>
+            <textarea id="wishInput" rows="2" maxlength="1200" placeholder="你想过怎样的生活？"></textarea>
+            <div class="wish-input-footer"><span>ENTER 发送 <i>/</i> SHIFT + ENTER 换行</span><button id="sendWishButton" type="submit" aria-label="发送想法" title="发送想法"><span>发送</span><span data-icon="arrowUp"></span></button></div>
+          </form>
+          <p class="chat-limit" id="chatLimit">先聊聊。准备好后，再把想法变成平面。</p>
+        </section>
+        <div class="wish-summary"><div class="summary-label">已记住的空间偏好 <span id="summaryStatus">实时预览</span></div><div id="wishChips" class="chips"></div></div>
+        <button class="plan-launch" id="showPlanButton" aria-expanded="false" aria-controls="designPanel"><span class="plan-launch-symbol" aria-hidden="true">⌑</span><span class="plan-launch-copy"><strong>看看空间的回应</strong><small><b id="miniRoomCount">0</b> 个模块 <span>·</span> <b id="miniArea">0</b> m² 室内</small></span><span class="plan-launch-action">展开平面 ↗</span></button>
+        <button id="openFunctionLibraryButton" class="function-library-launch" aria-haspopup="dialog" aria-controls="functionLibraryDialog"><span>⌑ 功能草图库</span><small><b id="functionLibraryCount">0</b> 张已收藏</small><span>↗</span></button>
+      </aside>
+
+      <section id="officeWorkspace" aria-label="整栋自适应办公楼 3D 工作台">
+        <header class="office-top"><div><div class="office-kicker">OFFICE — ADAPTIVE SYSTEM / 01</div><h2>一栋楼，多种工作方式。</h2></div><span class="office-tag">CORE / 12 × 24 M</span></header>
+        <div class="office-stats" id="officeStats"></div>
+        <div class="office-stage"><canvas id="officeCanvas" tabindex="0" role="img" aria-label="可旋转的三维办公楼。拖动旋转，滚轮缩放，点击 cube 查看内容；键盘方向键旋转，加减键缩放。"></canvas><div class="office-stage-label"><b id="officeViewLabel">整体 / ALL FLOORS</b><span id="officeDimensions">核心筒 12 × 24 m</span></div><div class="office-view-tools"><button id="officeIsolate" aria-pressed="false">单层</button><button id="officeZoomOut" aria-label="缩小三维模型">−</button><button id="officeZoomIn" aria-label="放大三维模型">＋</button><button id="officeHome">复位视角 ↗</button></div><div class="office-stage-bottom"><span>拖动旋转 · 滚轮缩放 · 点击模块</span><span id="officeHeight"></span></div></div>
+        <div class="office-legend" id="officeLegend"></div><div class="office-count-note"><label><input type="checkbox" id="officeRoofGardens"> 室内模块上方为空时，自动补屋面花园（楼顶除外）</label><p>由下层模块承托，不递归叠加花园；自动花园计入总数和存档，不占五项需求配额。</p></div><p class="office-count-note">基础版本：办公 50% · 会议 20% · 制作实验 10% · 共享交流 10% · 花园 10%。比例按外挂模块面积计算，不含核心筒；属于研发办公概念配比。初始 160 个模块，向外 1–2 格，每层花园分置东西两侧。<a href="https://www.gensler.com/blog/a-living-lab-designing-gensler-miamis-new-hybrid-office" target="_blank" rel="noopener">办公配比参考</a> · <a href="https://legacy.wbdg.org/building-types/research-facilities/research-laboratory" target="_blank" rel="noopener">实验空间参考</a></p>
+        <section class="office-counts" aria-label="各层模块数量"><div class="office-count-heading"><div><h3>每层挂多少，由你决定。</h3><p id="officeCountCapacity"></p></div><button id="officeInitialLayout" class="office-button">使用均衡基础布局 ↗</button></div><div id="officeCountRows" class="office-count-rows"></div><div class="office-count-actions"><button id="officeApplyCounts" class="office-button office-primary">应用各层数量</button><div class="office-random-range"><label>随机最少<input id="officeRandomMin" type="number" min="1" max="36" step="1"></label><span>—</span><label>随机最多<input id="officeRandomMax" type="number" min="1" max="36" step="1"></label></div><button id="officeRandomCounts" class="office-button">随机各层数量 ↻</button><button id="officeRandomLayout" class="office-button">随机延伸布局 ↻</button></div><p class="office-count-note">随机按钮立即按范围为每层生成数量。所有模块采用 4×4×4 m。随机延伸布局保留各层数量和用途，重新分配各方向的连续挂接长度；数量变化时按本层用户重新分配功能。可用「撤销」恢复。</p></section>
+        <div class="office-detail" id="officeDetail" role="status"></div>
+        <div class="office-controls"><aside class="office-floor-panel"><span class="office-section-title">楼层 / FLOOR INDEX</span><div class="office-floor-list" id="officeFloors"></div></aside><section class="office-feedback" aria-label="用户需求反馈"><div class="office-inputs"><label>需求作用范围<select id="officeScope"><option value="user">当前用户</option><option value="floor" selected>当前楼层</option><option value="building">整栋楼用户</option></select></label><label>当前用户<select id="officeUser"></select></label></div><div class="office-sliders" id="officeSliders"></div><div class="office-actions"><button id="officePreview" class="office-button office-primary">预览空间回应 ↗</button><button id="officeUndo" class="office-button" disabled>撤销</button><button id="officeSave" class="office-button">保存办公方案 ↓</button><button id="officeLoad" class="office-button">载入</button></div><div class="office-preview" id="officeProposal" hidden></div></section></div>
+        <details class="office-settings"><summary>模型参数与用户 / 演示值可调整 ＋</summary><div class="office-inputs"><label>层数<input id="officeFloorCount" type="number" min="1" max="20"></label><label>模块平面尺寸<select id="officeDefaultFootprint"><option value="4x4">4 × 4 m</option></select></label><label>最大向外挂接排数<input id="officeProjectionDepth" type="number" min="3" max="6" step="1"></label><label>模块高度 / m<input id="officeModuleHeight" type="number" min="4" max="4" value="4" readonly></label><label>层高 / m<input id="officeFloorHeight" type="number" min="4" max="4" value="4" readonly></label></div><button class="office-button" id="officeConfigure">应用模型参数</button><p>统一 4 m 网格：模块 4×4×4 m，层高 4 m。核心筒 12×24 m，短边 3 个挂接位，长边 6 个。默认最多向外 3 排，可设为 3–6 排。各条挂接链的实际长度随机。减少层数会移除上层，可撤销。</p><div class="office-inputs"><fieldset class="office-direction-controls"><legend>允许外挂的方向 / 整栋楼</legend><label><input id="officeAllowNorth" type="checkbox" checked> 北侧 · 短边</label><label><input id="officeAllowSouth" type="checkbox" checked> 南侧 · 短边</label><label><input id="officeAllowWest" type="checkbox" checked> 西侧 · 长边</label><label><input id="officeAllowEast" type="checkbox" checked> 东侧 · 长边</label><button id="officeApplyDirections" class="office-button">应用外挂方向</button><button id="officeOnlyLongSides" class="office-button">仅两个长边外挂</button><p>关闭方向后，当前布局、随机布局和数量调整均不在该侧生成模块（含花园）。保留各层总量；容量不足时会提示。</p></fieldset><fieldset><legend>每层模块数量 / 整栋楼统一设置</legend><label>北侧<input id="officeSideNorth" type="number" min="0" step="1"></label><label>南侧<input id="officeSideSouth" type="number" min="0" step="1"></label><label>西侧<input id="officeSideWest" type="number" min="0" step="1"></label><label>东侧<input id="officeSideEast" type="number" min="0" step="1"></label></fieldset><label>新增用户名称<input id="officeUserName" type="text" maxlength="60" placeholder="例如：结构研究团队"></label></div><div class="office-actions"><button id="officeResize" class="office-button">应用到整栋楼每层</button><button id="officeAddUser" class="office-button">添加本层用户</button><button id="officeRemoveUser" class="office-button">移除当前用户</button></div><p>四侧数量包含室内模块与花园。每条模块链从核心筒表面垂直向外直线连接，不允许左右转折或横向分支。花园排在所属链的所有室内模块之后，继续沿同一直线向外延伸。增减用户会重新分配本层模块。用户为演示资料，需求权重不是实时传感器数据。</p></details>
+        <div class="office-notice">反馈链：用户需求 → 权重分配 → 预览变化 → 应用 → 3D 空间回应。办公楼聊天已连接 GPT；AI 建议经过预览与确认后应用，也可在此手动调整。挂接结构与交通系统待深化。</div><div class="office-storage-status" id="officeStatus" role="status" aria-live="polite"></div>
+        <input id="officeImport" type="file" accept=".json,application/json" hidden>
+      </section>
+      <section class="design-panel" id="designPanel" aria-label="平面编辑区" hidden>
+        <div class="plan-panel-topline"><span>SPACE / LIVE MODEL</span><button class="inline-action" id="closePlanButton" aria-label="收起平面，返回对话">收起平面 ×</button></div><div class="canvas-header"><div class="plan-heading"><span class="plan-index" id="planIndex">方案 01</span><h2 id="planTitle">我的向阳小屋</h2><button id="renameButton" class="icon-button inline-action" aria-label="修改方案名称" title="修改名称"><span data-icon="edit"></span></button></div><div class="view-tabs" aria-label="视图"><button id="planViewButton" class="active" aria-pressed="true">平面视图</button><button id="blockViewButton" aria-pressed="false">模块视图</button></div></div>
+        <div class="plan-rule-bar"><span><i></i><span id="entryRuleLabel">东侧主入口 / 1.2 m 预留</span></span><button type="button" class="inline-action detail-status" id="detailStatus" aria-haspopup="dialog">门窗与家具随拼搭调整</button></div>
+        <div class="entry-migration" id="entryMigration" hidden><span id="entryMigrationText"></span><button class="inline-action" id="downloadEntryBackup">下载原方案</button><button class="inline-action" id="dismissEntryMigration" aria-label="关闭入口调整提示">×</button></div>
+        <div class="module-migration" id="moduleMigration" hidden><span id="moduleMigrationText">旧方案已转换为 3 m 标准单元，对话已保留。</span><button class="inline-action" id="downloadModuleBackup">下载原方案</button><button class="inline-action" id="dismissModuleMigration" aria-label="关闭尺寸调整提示">×</button></div>
+        <div class="module-system"><strong>1 单元 = 3 × 3 m</strong><span>大客厅 2 × 2 / 单人睡房 1 × 1 / 2人睡房 1 × 1.5 / 阳台 0.5 × 1</span></div>
+        <section id="functionModuleDock" class="function-module-dock" aria-label="可拼接的功能草图库" hidden><div class="function-dock-heading"><strong>功能草图库</strong><span>拖入画布 · 或点 ＋ 自动拼接</span></div><div id="functionModuleTray" class="function-module-tray"></div></section>
+        <section class="building-context" id="buildingContext" aria-label="六户楼栋关系"></section>
+        <div class="draft-caption">核心筒与邻居禁止拼接 · 无中空 / 家具与通路问题仅提示</div>
+        <div class="canvas-wrap" id="canvasWrap">
+          <div class="canvas-topbar"><span class="canvas-description"><i></i>按实际家具与使用空间布置</span><div class="furniture-tools"><button id="buildingExtentButton" type="button" aria-pressed="false">楼栋范围</button><button id="clearanceButton" aria-pressed="false">使用间距</button><button id="furnitureGuideButton" aria-haspopup="dialog">家具尺寸 ↗</button><button class="subtle-button" id="optimizeRoutesButton">优化动线</button><button class="subtle-button" id="alternateButton" title="随机选择不同的可行拼法，保留所有模块与尺寸"><span data-icon="shuffle"></span>换个拼法</button></div></div>
+          <svg id="planSvg" role="group" aria-label="可编辑的单元平面图，点击模块选择，拖动拼接，方向键微调" xmlns="http://www.w3.org/2000/svg"></svg>
+          <div class="empty-state" id="emptyState" hidden><span>⌑</span><h3>给生活留一块空白</h3><p>点击下方的模块，开始搭建你的家。</p></div>
+          <div class="selection-card" id="selectionCard" hidden></div>
+          <div class="clearance-legend" id="clearanceLegend" hidden><i></i>虚线框：使用空间 · 选中房间查看步行路线</div>
+          <div class="canvas-footer"><div class="canvas-tools"><button id="undoButton" class="icon-button inline-action" aria-label="撤销" title="撤销 Ctrl+Z"><span data-icon="undo"></span></button><button id="redoButton" class="icon-button inline-action" aria-label="重做" title="重做 Ctrl+Shift+Z"><span data-icon="redo"></span></button><span class="toolbar-divider"></span><button id="zoomOutButton" class="icon-button inline-action" aria-label="缩小" title="缩小"><span data-icon="minus"></span></button><span id="zoomLabel">100%</span><button id="zoomInButton" class="icon-button inline-action" aria-label="放大" title="放大"><span data-icon="plus"></span></button><button id="fitButton" class="icon-button inline-action" aria-label="适应画布" title="适应画布"><span data-icon="fit"></span></button></div><div class="canvas-tip"><span data-icon="move"></span>拖放按半单元吸附<span class="desktop-hint"> · 方向键 0.3 m 微调</span></div></div>
+        </div>
+        <div id="circulationSummary" class="plan-rule-bar" role="status"></div><div class="plan-stats"><div><span class="stat-label">室内面积</span><strong id="interiorArea">—</strong><span class="stat-unit">m²</span></div><span class="stat-divider"></span><div><span class="stat-label">户外面积</span><strong id="outdoorArea">—</strong><span class="stat-unit">m²</span></div><span class="stat-divider"></span><div><span class="stat-label">睡房</span><strong id="bedroomCount">—</strong><span class="stat-unit">间</span></div><div class="plan-status" id="planStatus"><i></i>模块已连接</div></div>
+        <div class="plan-secondary-tools"><button id="toggleModulesButton" aria-expanded="false" aria-controls="moduleLibrary">＋ 添加空间</button><button id="toggleNeedsButton" aria-expanded="false" aria-controls="needsPanel">查看需求 <span id="miniNeedCount">0</span> ↗</button></div><div class="module-library" id="moduleLibrary" hidden><div class="library-heading"><h3>空间积木 <span>点击添加，也可以拖入画布</span></h3><span class="library-count">10 MODULES</span></div><div id="moduleTray" class="module-tray"></div></div>
+        <section class="requirements-panel" id="needsPanel" aria-label="我的需求清单" hidden><div class="requirements-heading"><div><h3>你的讲究，都先记下</h3><p>能落实的检查平面，需细化的留在下一步。</p></div><span id="requirementCount">0 项需求</span></div><div id="requirementsList" class="requirements-list"></div></section>
+      </section>
+    </section>
+
+    <footer class="page-footer"><span><i></i>先对话，再成形。<span class="footer-detail">3D 办公楼概念原型 / 独立需求面板</span></span><span class="footer-code">LOCAL—01 <span class="footer-bars" aria-hidden="true">▌▌▏▌▌▎▏▌▎</span></span></footer>
+  </main>
+  <input id="importFile" type="file" accept=".json,application/json" hidden>
+  <div class="toast" id="toast" role="status" aria-live="polite"></div>
+  <dialog id="helpDialog"><div class="dialog-header"><span class="eyebrow">MAKE ROOM FOR YOUR WISHES.</span><button class="icon-button inline-action" data-close-dialog aria-label="关闭说明">×</button></div><h2>先聊聊生活，再拼出一个家。</h2><div class="help-steps"><div><b>01</b><section><h3>像聊天一样，一点点说</h3><p>GPT会结合前面的对话理解你的生活方式、解释设计取舍，也可以讨论风水偏好。不用按固定格式表达；点击「应用到平面」才会重新拼排。原来的四步引导也保留着。点击「重新对话」会清空聊天和已记录需求，保留当前平面和功能草图库；误点后可立即撤销。</p></section></div><div><b>02</b><section><h3>看见哪些愿望已经落实</h3><p>需求清单会检查厨房与睡房的相邻关系、整体紧凑程度。风水按你的文化与居住偏好记录；门窗与家具会自动调整，但开门见灶、床对门等具体关系仍需专项细化，不会直接标成已经满足。</p></section></div><div><b>03</b><section><h3>继续拼搭，也留住对话</h3><p>标准单元为 3 × 3 米，大客厅为 2 × 2 单元、2人睡房和多用客厅为 1 × 1.5、单人小睡房为 1 × 1、阳台为 0.5 × 1。模块可拖动、旋转、增减，支持撤销。客厅<span data-entry-name>东</span>侧为主入口，1.2 米入口带禁止拼接。房门随相邻模块改变，窗只开在外露墙段，家具会避开开门空间并根据窗墙重新布置。聊天提出的新功能会画成概念草图，存入「功能草图库」。可从已有对话整理、继续调整或下载 SVG；也能从画布上方的功能草图库直接拖入，或点「放入主平面」自动拼接。每次打开或刷新工具都从空白开始。想保留本次设计，请点击「保存」；下次通过「载入方案」继续。下载的方案包含平面、对话、需求和草图库。模型未连接时仍可使用选项引导和手动拼搭。</p></section></div></div><p class="dialog-note" id="modelConnectionDetail">正在连接GPT API…</p><p class="dialog-note">聊天和所选方案上下文会发送至 OpenAI，由 GPT 生成回复，按 API 用量计费。API Key 仅在本机服务器配置。模型也可能理解有误，应用前可以继续纠正。平面仍是概念模块图，已示意门窗与家具，尚未完成完整交通、结构或真实日照校核。</p><button class="primary-button" data-close-dialog>开始聊聊 <span>↗</span></button></dialog>
+  <dialog id="functionLibraryDialog" class="function-library-dialog" aria-labelledby="functionLibraryTitle"><div class="dialog-header"><span class="eyebrow">FUNCTION ARCHIVE / LOCAL</span><button class="icon-button inline-action" data-close-dialog aria-label="关闭功能草图库">×</button></div><div class="function-library-heading"><div><h2 id="functionLibraryTitle">让新功能，先有个形状。</h2><p>从对话中长出的新功能，收藏后也能拼进你的家。</p></div><span id="functionArchiveCount">0 张已收藏</span></div><div class="function-library-toolbar"><button id="collectFunctionSketches">从已有对话整理草图 ↗</button><button id="backupFunctionLibrary">备份方案与草图 ↓</button></div><div id="functionLibraryEmpty" class="function-library-empty"><div aria-hidden="true">＋</div><h3>下一种空间，从一句话开始。</h3><p>比如「想有个能做手工、收拾工具的地方」。<br>系统会理解它的用途，画出家具和活动空间。</p><button id="functionEmptyChatButton">回到对话，说说想法 ↗</button></div><div id="functionLibraryBody" class="function-library-body" hidden><nav id="functionSketchList" class="function-sketch-list" aria-label="已收藏功能草图"></nav><section id="functionSketchDetail" class="function-sketch-detail" aria-label="功能平面预览"></section></div><p class="function-archive-note">保存在当前浏览器；重新对话后仍保留。下载备份可迁移到其他浏览器。</p></dialog>
+  <dialog id="furnitureGuideDialog" class="furniture-guide" aria-labelledby="furnitureGuideTitle"><div class="dialog-header"><span class="eyebrow">REAL SIZE / ROOM TO MOVE</span><button class="icon-button inline-action" data-close-dialog aria-label="关闭家具尺寸">×</button></div><h2 id="furnitureGuideTitle">家具放下，还要能用。</h2><p class="furniture-intro">家具按实际米数绘制。缩小房间不会缩小家具；门前、拉椅、开柜与上下床的空间一起检查，还会追踪从门口到这些位置的连续路线。</p><section id="furnitureActual" aria-label="当前平面家具核对"></section><details class="furniture-reference" open><summary>当前采用的家具尺寸与间距</summary><div class="furniture-table-wrap"><table><thead><tr><th>家具</th><th>宽 × 深</th><th>使用空间</th></tr></thead><tbody id="furnitureRulesTable"></tbody></table></div></details><p class="furniture-method">这些是本工具的概念布置参数，实际产品可有不同尺寸。门与门之间通行带按 0.90 m，家具使用位置的步行检查按 0.60 m 人行宽度，厨房操作区按 1.20 m；站立空间可以错时共用，家具本体不能占用。未知设备会标注“尺寸待确认”。</p><details class="furniture-reference"><summary>尺寸依据</summary><p>家具外形参考厂家尺寸；使用间距参考布置指南。床边、柜前和拉椅余量是本工具当前选用的设计值，可在后续设计中细化。</p><ul><li><a href="https://www.ikea.com/nl/en/p/huvudspelare-gaming-desk-black-90539166/" target="_blank" rel="noopener noreferrer">IKEA：游戏桌 140 × 80 cm</a></li><li><a href="https://www.ikea.com/in/en/files/pdf/25/a4/25a44ca0/kivik.pdf" target="_blank" rel="noopener noreferrer">IKEA KIVIK：双人 / 三人沙发外形尺寸</a></li><li><a href="https://www.ikea.com/nl/en/rooms/dining/how-to/arranging-your-dining-area-our-best-tips-pxmeb38104000c511ec8c6a55a63e883f13/" target="_blank" rel="noopener noreferrer">IKEA：餐桌离墙 80 cm、离厨房操作柜 120 cm</a></li><li><a href="https://www.ikea.com/th/th/files/pdf/fb/fa/fbfabb30/th22-your_new_ikea_kitchen.pdf" target="_blank" rel="noopener noreferrer">IKEA：厨房相对柜列的操作空间</a></li><li><a href="https://www.ikea.com.tr/en/ideas/how-should-the-size-and-height-of-the-coffee-table-be" target="_blank" rel="noopener noreferrer">IKEA：茶几周边 40–50 cm 使用空间</a></li></ul></details><p class="furniture-method">检查当前家具布局中的使用区，以及从门口绕开家具到达使用区的路径。0.60 m 路径是本工具的概念参数，不是无障碍标准。未找到摆法不等于所有方案都不可行；图纸还不包含墙厚、施工与无障碍专项设计。</p></dialog>
+  <dialog id="renameDialog"><form id="renameForm"><div class="dialog-header"><span class="eyebrow">NAME YOUR LITTLE WORLD.</span><button type="button" class="icon-button inline-action" data-close-dialog aria-label="关闭">×</button></div><h2>给这个家起个名字</h2><label for="nameInput">方案名称</label><input id="nameInput" maxlength="24" required autocomplete="off"><button class="primary-button" type="submit">保存名称 <span>↗</span></button></form></dialog>
+  <dialog id="confirmDialog"><div class="dialog-header"><span class="eyebrow">A NEW BEGINNING.</span><button class="icon-button inline-action" data-close-dialog aria-label="取消">×</button></div><h2 id="confirmTitle">重新开始？</h2><p id="confirmText"></p><div class="dialog-actions"><button class="outline-button" data-close-dialog>保留当前设计</button><button class="primary-button" id="confirmAccept">继续</button></div></dialog>
+
+</body>
+</html>

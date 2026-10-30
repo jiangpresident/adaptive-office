@@ -1,0 +1,67 @@
+/* Magenta is a small, state-driven attention accent. Channel bars remain lime;
+   ordinary actions remain dark, selected controls white, and inline text transparent. */
+:root{
+  --attention:#ff2b87;
+  --attention-text:#ff91bd;
+  --attention-ink:#240511;
+  --attention-line:#8b3459;
+  --attention-surface:#27131d;
+}
+.attention-tag{
+  display:inline-flex;align-items:center;gap:4px;
+  background:var(--attention);color:var(--attention-ink);
+  padding:3px 6px;margin-left:9px;font:10px var(--mono);
+  line-height:1.5;white-space:nowrap;vertical-align:middle;
+}
+body button.inline-action .attention-tag{
+  background:var(--attention);color:var(--attention-ink)!important;
+}
+.plan-rule-bar .detail-status{
+  padding:0;text-align:right;font:9px var(--mono);line-height:1.7;
+  color:#8b9c79!important;cursor:pointer;
+}
+.plan-rule-bar .detail-status .attention-tag{margin-left:0;margin-right:4px}
+.plan-rule-bar .detail-status[data-attention=true]{color:var(--attention-text)!important}
+.furniture-room-audit[data-attention=true]{border-left:3px solid var(--attention);border-top-color:var(--attention-line)}
+.furniture-room-audit[data-attention=true] ul{color:#e8bbc9}
+.furniture-room-audit[data-attention=true] li::marker{color:var(--attention)}
+.requirement-status:is(.unmet,.partial,.clarify){background:var(--attention);color:var(--attention-ink)}
+.requirement-dot:is(.unmet,.partial,.clarify){background:var(--attention-surface);color:var(--attention-text)}
+.model-status[data-state=offline]{color:var(--attention-text);background:transparent}
+.model-status[data-state=offline] .model-status-dot{background:var(--attention);box-shadow:none}
+.chat-notice[data-tone=error]{border-color:var(--attention-line);border-left:3px solid var(--attention);background:var(--attention-surface);color:#f1bdcf}
+.chat-notice[data-tone=error]::before{content:'!  回答未完成';display:table;margin-bottom:7px;padding:3px 6px;background:var(--attention);color:var(--attention-ink);font:10px var(--mono);line-height:1.5}
+.plan-status.warning{color:var(--attention-text)}
+.plan-status.warning i{background:var(--attention)}
+.entry-migration[data-attention=true],.module-migration[data-attention=true]{border-left:3px solid var(--attention);background:var(--attention-surface);color:#f1bdcf}
+#planSvg .room.invalid .room-outline{stroke:var(--attention);fill:#3a1827;stroke-width:2}
+@media(max-width:600px){
+  .plan-rule-bar{flex-wrap:wrap}
+  .plan-rule-bar .detail-status{font-size:9px;text-align:left}
+  .furniture-room-audit .attention-tag{margin-top:4px;font-size:9px}
+}
+
+/* A slow pulse indicates activity, not progress or estimated completion. */
+#thinkingSignal[hidden]{display:none}
+#thinkingSignal{display:flex;align-items:center;gap:6px;margin-bottom:7px;color:#c0fe04;background:transparent}
+#thinkingSignal i{display:block;width:7px;height:7px;background:currentColor;opacity:.3;animation:wish-thinking 1.5s ease-in-out infinite}
+#thinkingSignal i:nth-child(2){animation-delay:.2s}#thinkingSignal i:nth-child(3){animation-delay:.4s}
+#thinkingSignal b{font:12px var(--pixel);margin-left:6px;background:transparent}
+#thinkingSignal small{font:11px var(--mono);color:#b8c99d;background:transparent}
+.model-status[data-state=working] .model-status-dot{animation:wish-thinking 1.5s ease-in-out infinite}
+@keyframes wish-thinking{0%,100%{opacity:.3}50%{opacity:1}}
+@media(prefers-reduced-motion:reduce){#thinkingSignal i,.model-status[data-state=working] .model-status-dot{animation:none;opacity:1}}
+
+/* Keep the local-model choice separate from conversation and plan data. */
+#modelChoice{max-width:150px;margin-left:8px;padding:4px 6px;background:#11140f;color:#e4e8dd;border:1px solid #596d38;border-radius:0;font:11px var(--mono)}
+#modelChoice:focus-visible{outline:1px solid var(--signal);outline-offset:2px}
+#modelChoice:disabled{opacity:.55}
+#chatStreamPreview{max-height:180px;overflow:auto;line-height:1.8;color:#e4e8dd;white-space:pre-wrap}
+.chat-status-row .model-status{flex-wrap:wrap;max-width:none}
+
+.module-family{align-self:start;display:flex;flex-direction:column;gap:5px;min-width:0}.module-family>.module-card{width:100%;height:auto;min-height:120px}
+.module-subtype{margin-left:8px;padding:8px;border-left:2px solid var(--signal);background:#1a2114;color:#e1e8d6;font-size:11px;cursor:grab}
+.module-subtype>span,.module-subtype>small{display:block;overflow-wrap:anywhere}.module-subtype>small{margin-top:5px;color:#93a47e;font-size:10px}.module-subtype>div{display:flex;gap:6px;margin-top:6px}
+.module-subtype button{background:transparent;color:inherit;border:1px solid #52623f;padding:3px 7px;font-size:10px}
+
+#moduleTray{grid-template-columns:repeat(auto-fit,minmax(110px,1fr));align-items:start}

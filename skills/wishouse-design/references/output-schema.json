@@ -1,0 +1,762 @@
+{
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "routeRequests",
+    "designIntent",
+    "occupancy",
+    "pendingProposalAction",
+    "planAction",
+    "designTargets",
+    "moduleEdits",
+    "orientationIntent",
+    "requirements",
+    "withdrawProposal",
+    "proposal",
+    "functionSketches",
+    "reply",
+    "choices"
+  ],
+  "properties": {
+    "routeRequests": {
+      "type": "array",
+      "maxItems": 8,
+      "description": "调整房间连接或到达路线，不改变房间尺寸/功能/家具。roomId为目标房间真实id；avoidIds为从客厅入口到目标途中不能穿过的房间id；directTo为要求门直接连通的房间id或null。无动线修改时[]。",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "roomId",
+          "avoidIds",
+          "directTo"
+        ],
+        "properties": {
+          "roomId": {
+            "type": "string"
+          },
+          "avoidIds": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "directTo": {
+            "type": [
+              "string",
+              "null"
+            ]
+          }
+        }
+      }
+    },
+    "designIntent": {
+      "type": "string",
+      "enum": [
+        "continue",
+        "startOver"
+      ],
+      "description": "startOver仅用于用户明确放弃原方案、按新需求从头设计；局部调整、换个拼法、否定重做均为continue。startOver后只用本轮明确的新需求，旧房间、旧入住人数、旧需求和待执行提案均不继承；新需求不足则discuss询问。"
+    },
+    "occupancy": {
+      "anyOf": [
+        {
+          "type": "null"
+        },
+        {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "residentCount",
+            "guestCount",
+            "residentRelationship",
+            "residentSleeping",
+            "residentSharingEvidence",
+            "residentBedroom",
+            "guestSleeping",
+            "reason"
+          ],
+          "properties": {
+            "residentSharingEvidence": {
+              "type": [
+                "string",
+                "null"
+              ],
+              "maxLength": 120,
+              "description": "原样引用用户关于关系或分房的短句，例如我和老婆、两个室友、我们分开睡。只有人数或无来客不是证据，例如“我们两个人住，没有来客”必须为空字符串且关系/分房为unspecified。禁止引用UI默认couple或助手旧建议；无更新null。"
+            },
+            "residentRelationship": {
+              "type": [
+                "string",
+                "null"
+              ],
+              "enum": [
+                "couple",
+                "roommates",
+                "other",
+                "unspecified",
+                null
+              ],
+              "description": "用户明确的常住者关系；夫妻/伴侣couple，室友roommates，其他other，未知unspecified，未更新null；不能由默认household=couple推断。"
+            },
+            "residentSleeping": {
+              "type": [
+                "string",
+                "null"
+              ],
+              "enum": [
+                "shared",
+                "separate",
+                "unspecified",
+                null
+              ],
+              "description": "常住者是否共用睡房：明确选择优先；夫妻/伴侣默认shared，室友默认separate，只说两个人住而未知关系时unspecified并询问；未更新null。"
+            },
+            "residentBedroom": {
+              "type": [
+                "string",
+                "null"
+              ],
+              "enum": [
+                "default",
+                "single",
+                "double",
+                "custom",
+                null
+              ],
+              "description": "常住者床型偏好：default没有特别要求按实际人数选；single明确单人房；double明确大床/2人房；custom定制床型。无更新null，不能把助手旧提案当用户偏好。"
+            },
+            "residentCount": {
+              "type": [
+                "integer",
+                "null"
+              ],
+              "minimum": 0,
+              "maximum": 40,
+              "description": "长期居住人数；只根据用户明确资料，未知或未改为null，不能由默认household推断。"
+            },
+            "guestCount": {
+              "type": [
+                "integer",
+                "null"
+              ],
+              "minimum": 0,
+              "maximum": 40,
+              "description": "本次同时留宿的临时来客总人数；父母通常2人，妈妈/爸爸单独来1人，明确离开为0，未知或未改为null。"
+            },
+            "guestSleeping": {
+              "type": [
+                "string",
+                "null"
+              ],
+              "enum": [
+                "shared",
+                "separate",
+                "unspecified",
+                null
+              ],
+              "description": "shared用户接受共用2人睡房；separate需要分开睡；未明确unspecified；不更新null。"
+            },
+            "reason": {
+              "type": "string",
+              "maxLength": 180
+            }
+          }
+        }
+      ],
+      "description": "语义理解实际入住人数，常住和临时分开；无更新null，不按每人一间算。"
+    },
+    "pendingProposalAction": {
+      "type": "string",
+      "enum": [
+        "none",
+        "continue",
+        "revise"
+      ],
+      "description": "pendingModuleProposal存在时：用户确认上一方案、只补充紧凑或连接位置时continue；明确改变上轮增减内容时revise并返回完整新操作；无关话题或仅讨论为none。continue不重复输出moduleEdits，程序保留待执行操作与目标。"
+    },
+    "planAction": {
+      "type": "string",
+      "enum": [
+        "discuss",
+        "propose",
+        "apply"
+      ],
+      "description": "语义判断用户本轮意图：discuss=只讨论/暂不修改；propose=明确需求，先列方案；apply=用户明确确认、要求生成或应用。apply必须输出完整proposal，可与当前设置相同；不能仅在reply声称完成。"
+    },
+    "designTargets": {
+      "type": "array",
+      "maxItems": 12,
+      "description": "先理解本轮各项明确需求，列出完成后的数量/功能目标，再生成覆盖全部目标的moduleEdits。不是操作次数。未要求改变的数量不列；讨论或无修改时[]。cooking=1表示要求能做饭，0表示明确不要；bedrooms为睡房总数，不能用单人房数量代替。",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "metric",
+          "value"
+        ],
+        "properties": {
+          "metric": {
+            "type": "string",
+            "enum": [
+              "livingLarge",
+              "livingSmall",
+              "livingMedium",
+              "washroom",
+              "showerRoom",
+              "kitchen",
+              "bedroomSingle",
+              "bedroom",
+              "balcony",
+              "garden",
+              "custom",
+              "bedrooms",
+              "cooking"
+            ]
+          },
+          "value": {
+            "type": "integer",
+            "minimum": 0,
+            "maximum": 40
+          }
+        }
+      }
+    },
+    "moduleEdits": {
+      "type": "array",
+      "maxItems": 12,
+      "description": "只对当前画布做用户明确要求的新增/移除/替换。没有操作或只讨论时[]；不填相对位置坐标，程序找空位；替换尺寸不同时可重新拼接，保留其他模块尺寸与内容。",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "action",
+          "type",
+          "count",
+          "roomId",
+          "sketchId",
+          "anchorId"
+        ],
+        "properties": {
+          "action": {
+            "type": "string",
+            "enum": [
+              "add",
+              "remove",
+              "replace"
+            ]
+          },
+          "type": {
+            "type": "string",
+            "enum": [
+              "livingLarge",
+              "livingSmall",
+              "livingMedium",
+              "washroom",
+              "showerRoom",
+              "kitchen",
+              "bedroomSingle",
+              "bedroom",
+              "balcony",
+              "garden",
+              "custom"
+            ],
+            "description": "add的新增类型、remove的原类型、replace的目标类型。大客厅换小客厅时type=livingSmall，不是custom。"
+          },
+          "count": {
+            "type": "integer",
+            "minimum": 1,
+            "maximum": 8
+          },
+          "roomId": {
+            "type": [
+              "string",
+              "null"
+            ],
+            "description": "remove和replace指定actualRooms.moduleIndex的真实id；add必须null。replace只改这一间，不能虚构目标。不清楚先问。"
+          },
+          "sketchId": {
+            "type": [
+              "string",
+              "null"
+            ],
+            "description": "新增或替换custom时使用functionLibrary的id，或本轮新子类型草图id；标准模块null。"
+          },
+          "anchorId": {
+            "type": [
+              "string",
+              "null"
+            ],
+            "description": "用户指定直接连接的现有模块id，未指定null。"
+          }
+        }
+      }
+    },
+    "orientationIntent": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "status",
+        "direction",
+        "reason"
+      ],
+      "properties": {
+        "status": {
+          "type": "string",
+          "enum": [
+            "retain",
+            "confirmed",
+            "ask"
+          ]
+        },
+        "direction": {
+          "type": [
+            "string",
+            "null"
+          ],
+          "enum": [
+            "north",
+            "east",
+            "south",
+            "west",
+            null
+          ]
+        },
+        "reason": {
+          "type": "string",
+          "maxLength": 180
+        }
+      }
+    },
+    "requirements": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "upsert",
+        "remove"
+      ],
+      "properties": {
+        "upsert": {
+          "type": "array",
+          "maxItems": 12,
+          "items": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": [
+              "id",
+              "label",
+              "kind",
+              "text",
+              "value"
+            ],
+            "properties": {
+              "id": {
+                "type": "string",
+                "pattern": "^[a-zA-Z0-9_-]{1,80}$"
+              },
+              "label": {
+                "type": "string",
+                "maxLength": 160
+              },
+              "kind": {
+                "type": "string",
+                "enum": [
+                  "layout",
+                  "detail",
+                  "note"
+                ]
+              },
+              "text": {
+                "type": "string",
+                "maxLength": 600
+              },
+              "value": {
+                "type": [
+                  "string",
+                  "integer",
+                  "null"
+                ]
+              }
+            }
+          }
+        },
+        "remove": {
+          "type": "array",
+          "maxItems": 24,
+          "description": "只删除明确取消或已被替代的要求。用户说待处理、以后再做时用upsert改为detail/note保留，不能删除待办需求。",
+          "items": {
+            "type": "string",
+            "maxLength": 80
+          }
+        }
+      }
+    },
+    "withdrawProposal": {
+      "type": "boolean"
+    },
+    "proposal": {
+      "anyOf": [
+        {
+          "type": "null"
+        },
+        {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "prefs",
+            "constraints"
+          ],
+          "properties": {
+            "prefs": {
+              "type": "object",
+              "additionalProperties": false,
+              "required": [
+                "household",
+                "living",
+                "outdoor",
+                "orientation",
+                "lifestyle",
+                "bedrooms",
+                "singleBedrooms",
+                "gardenCount",
+                "balconyCount"
+              ],
+              "properties": {
+                "household": {
+                  "type": [
+                    "string",
+                    "null"
+                  ],
+                  "enum": [
+                    "solo",
+                    "couple",
+                    "family",
+                    null
+                  ]
+                },
+                "living": {
+                  "type": [
+                    "string",
+                    "null"
+                  ],
+                  "enum": [
+                    "large",
+                    "small",
+                    "medium",
+                    null
+                  ]
+                },
+                "outdoor": {
+                  "type": [
+                    "string",
+                    "null"
+                  ],
+                  "enum": [
+                    "none",
+                    "balcony",
+                    "garden",
+                    "both",
+                    null
+                  ]
+                },
+                "orientation": {
+                  "type": [
+                    "string",
+                    "null"
+                  ],
+                  "enum": [
+                    "south",
+                    "east",
+                    "west",
+                    "north",
+                    null
+                  ]
+                },
+                "lifestyle": {
+                  "type": [
+                    "string",
+                    "null"
+                  ],
+                  "enum": [
+                    "relaxed",
+                    "social",
+                    "quiet",
+                    null
+                  ]
+                },
+                "bedrooms": {
+                  "type": [
+                    "integer",
+                    "null"
+                  ],
+                  "minimum": 1,
+                  "maximum": 4
+                },
+                "singleBedrooms": {
+                  "type": [
+                    "integer",
+                    "null"
+                  ],
+                  "minimum": 0,
+                  "maximum": 4,
+                  "description": "睡房总数中有几间采用3×3米单人小睡房；其余为3×4.5米2人睡房。不是额外房间数。仅用户明确选择时修改，不按独居自动缩小。"
+                },
+                "gardenCount": {
+                  "type": [
+                    "integer",
+                    "null"
+                  ],
+                  "minimum": 1,
+                  "maximum": 8,
+                  "description": "启用该户外类型时的模块总数，1–8；增加两个需按当前实际数量相加。取消该类型用outdoor；未改变用null。"
+                },
+                "balconyCount": {
+                  "type": [
+                    "integer",
+                    "null"
+                  ],
+                  "minimum": 1,
+                  "maximum": 8,
+                  "description": "启用该户外类型时的模块总数，1–8；增加两个需按当前实际数量相加。取消该类型用outdoor；未改变用null。"
+                }
+              }
+            },
+            "constraints": {
+              "type": "object",
+              "additionalProperties": false,
+              "required": [
+                "separateKitchenBedroom",
+                "compactFootprint",
+                "gardenCourtyard",
+                "balconyBedroom"
+              ],
+              "properties": {
+                "separateKitchenBedroom": {
+                  "type": [
+                    "boolean",
+                    "null"
+                  ],
+                  "description": "true=要求厨房与睡房不共边；false=取消此要求，允许靠近（不保证变成相邻）；null=本轮未改变此偏好。用户说靠近也可以/不用特意分开，填 false 并 remove 对应需求。"
+                },
+                "compactFootprint": {
+                  "type": [
+                    "boolean",
+                    "null"
+                  ],
+                  "description": "true=要求尽量紧凑减少缺角；false=不再要求紧凑/方正；null=本轮未改变此偏好。"
+                },
+                "gardenCourtyard": {
+                  "type": [
+                    "boolean",
+                    "null"
+                  ]
+                },
+                "balconyBedroom": {
+                  "type": [
+                    "boolean",
+                    "null"
+                  ]
+                }
+              }
+            }
+          }
+        }
+      ]
+    },
+    "functionSketches": {
+      "type": "array",
+      "maxItems": 3,
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "id",
+          "title",
+          "parentType",
+          "description",
+          "widthUnits",
+          "heightUnits",
+          "furniture",
+          "notes"
+        ],
+        "properties": {
+          "id": {
+            "type": "string",
+            "pattern": "^[a-zA-Z0-9_-]{1,80}$"
+          },
+          "title": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 60
+          },
+          "parentType": {
+            "type": [
+              "string",
+              "null"
+            ],
+            "enum": [
+              "livingLarge",
+              "livingSmall",
+              "livingMedium",
+              "washroom",
+              "showerRoom",
+              "kitchen",
+              "bedroomSingle",
+              "bedroom",
+              "balcony",
+              "garden",
+              null
+            ],
+            "description": "修改标准房间用途时创建其子类型，例如睡房加办公用bedroom，普通独立功能草图用null。父模块不改。"
+          },
+          "description": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 400
+          },
+          "widthUnits": {
+            "type": "number",
+            "minimum": 0.5,
+            "maximum": 4,
+            "multipleOf": 0.5
+          },
+          "heightUnits": {
+            "type": "number",
+            "minimum": 0.5,
+            "maximum": 4,
+            "multipleOf": 0.5
+          },
+          "furniture": {
+            "type": "array",
+            "maxItems": 10,
+            "description": "仅列直接占据地面的实体家具或独立设备。桌面显示器、电脑主机、台灯、工具及柜上物品并入承载它们的桌柜名称和description，不单独列占地矩形；电脑位优先用desk，label如“电脑桌（含显示器）”，椅子另留位置。通道、走道、门前净空、操作净空、中央活动区都必须留空，写入 notes，不能输出为家具；generic 仅用于其他独立占地实体，不能表示空地或流线。用户要求画入口或活动空地时也遵守此规则，示意门窗由程序绘制。",
+            "items": {
+              "type": "object",
+              "additionalProperties": false,
+              "required": [
+                "label",
+                "kind",
+                "x",
+                "y",
+                "w",
+                "h"
+              ],
+              "properties": {
+                "label": {
+                  "type": "string",
+                  "minLength": 1,
+                  "maxLength": 40
+                },
+                "kind": {
+                  "type": "string",
+                  "enum": [
+                    "desk",
+                    "chair",
+                    "storage",
+                    "bed",
+                    "sofa",
+                    "table",
+                    "sink",
+                    "toilet",
+                    "shower",
+                    "fixture",
+                    "equipment",
+                    "plant",
+                    "generic"
+                  ]
+                },
+                "x": {
+                  "type": "number",
+                  "minimum": 0,
+                  "maximum": 0.96
+                },
+                "y": {
+                  "type": "number",
+                  "minimum": 0,
+                  "maximum": 0.96
+                },
+                "w": {
+                  "type": "number",
+                  "minimum": 0.04,
+                  "maximum": 1
+                },
+                "h": {
+                  "type": "number",
+                  "minimum": 0.04,
+                  "maximum": 1
+                },
+                "profile": {
+                  "type": "string",
+                  "maxLength": 60,
+                  "description": "从 furnitureRules.profiles 选匹配家具用途的尺寸模板；桌面游戏电脑位用游戏桌模板，不选微型边桌。未知设备不伪装成已知家具。"
+                },
+                "widthM": {
+                  "type": "number",
+                  "exclusiveMinimum": 0,
+                  "maximum": 30,
+                  "description": "家具背面沿墙方向的实际宽度，米；用户已给尺寸优先保留。未指定采用尺寸模板。不能为了画得下缩小。"
+                },
+                "depthM": {
+                  "type": "number",
+                  "exclusiveMinimum": 0,
+                  "maximum": 30,
+                  "description": "从背面到使用正面的实际进深，米；与widthM都是未旋转尺寸。"
+                },
+                "side": {
+                  "type": "string",
+                  "enum": [
+                    "north",
+                    "east",
+                    "south",
+                    "west"
+                  ],
+                  "description": "家具背面朝向；north=背面向北、正面向南。床的背面指床头，使用净空由规则自动计算。"
+                },
+                "groupId": {
+                  "type": "string",
+                  "pattern": "^[a-zA-Z0-9_-]{1,60}$",
+                  "description": "同一桌位的桌与椅可共用稳定标识，使椅子可处于对应桌的使用区；不同桌位用不同标识。"
+                }
+              }
+            }
+          },
+          "notes": {
+            "type": "array",
+            "maxItems": 4,
+            "description": "给非技术用户看的简短空间说明，只用东侧入口、北侧窗、中央活动空地等自然方位和米数；不要展示x/y、归一化比例、坐标区间、字段名或内部代码。",
+            "items": {
+              "type": "string",
+              "maxLength": 160
+            }
+          }
+        }
+      }
+    },
+    "reply": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 1800
+    },
+    "choices": {
+      "type": "array",
+      "maxItems": 3,
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "label",
+          "text"
+        ],
+        "properties": {
+          "label": {
+            "type": "string",
+            "maxLength": 50
+          },
+          "text": {
+            "type": "string",
+            "maxLength": 300
+          }
+        }
+      }
+    }
+  }
+}

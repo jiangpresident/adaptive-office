@@ -1,0 +1,10 @@
+/* Fusion Pixel 12px by TakWolf. SIL Open Font License 1.1; see OFL.txt.
+   Bundled locally, including Chinese and Latin glyphs. Best at integer
+   multiples of the 12px design grid for terminal labels and headings. */
+@font-face {
+  font-family: 'Wish Pixel';
+  src: url('./fusion-pixel-12px-proportional-zh_hans.otf.woff2') format('woff2');
+  font-style: normal;
+  font-weight: 400;
+  font-display: swap;
+}
