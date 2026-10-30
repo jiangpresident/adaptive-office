@@ -2,6 +2,10 @@
 
 An interactive architectural research prototype for an office building that responds to collective user feedback. Explore a 12 × 24 m core, 4 × 4 × 4 m modules, roof gardens, and an underground rotating warehouse with animated module handling.
 
+## Try in your browser
+
+[Open the free interactive demo](https://adaptive-office-demo.zany-puppy-1449.chatgpt.site) — no download or installation required. Includes preset demand scenarios, multiplier previews, 3D editing, and saved classroom dispatch. This hosted demo uses local preset feedback, not live GPT; it makes no paid AI calls. Changes are stored in each visitor's browser. The local version below supports live GPT with your own API key.
+
 ## Run locally
 
 Install Node.js 22 or later, download or clone this repository, and run:
